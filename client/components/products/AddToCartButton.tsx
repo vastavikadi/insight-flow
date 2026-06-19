@@ -1,6 +1,7 @@
 "use client";
 
 import { analytics } from "@/lib/analytics";
+import { notify } from "@/lib/notifications";
 import { useCartStore } from "@/store/cart-store";
 
 interface AddToCartButtonProps {
@@ -33,6 +34,7 @@ export function AddToCartButton({
         analytics.addToCart(
           product.id,
         );
+notify.cartAdded(product.name,);
 
         openCart();
       }}
