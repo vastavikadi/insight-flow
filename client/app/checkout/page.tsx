@@ -1,6 +1,7 @@
 "use client";
 
 import { analytics } from "@/lib/analytics";
+import { notify } from "@/lib/notifications";
 import { useCartStore } from "@/store/cart-store";
 
 export default function Checkout() {
@@ -14,8 +15,7 @@ export default function Checkout() {
     analytics.purchaseCompleted(orderId, items, total);
 
     clearCart();
-
-    alert(`Order ${orderId} placed successfully`);
+notify.purchaseCompleted(orderId);
   };
 
   return (
