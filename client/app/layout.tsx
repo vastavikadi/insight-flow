@@ -7,6 +7,9 @@ import {
   CartDrawer,
 } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
+
+import { Toaster } from "sonner";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,6 +40,7 @@ export default function RootLayout({
         <SearchPalette />
         <CartDrawer />
         <WishlistDrawer />
+<Toaster position="top-right" richColors closeButton />
       </AnalyticsProvider>
     </html>
   );
