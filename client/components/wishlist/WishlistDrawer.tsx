@@ -6,7 +6,6 @@ import { useCartStore } from "@/store/cart-store";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { analytics } from "@/lib/analytics";
 import { useRouter } from "next/navigation";
-import { toast } from "react-custom-alert";
 
 export function WishlistDrawer() {
   const router = useRouter();
@@ -14,7 +13,6 @@ export function WishlistDrawer() {
   const removeFromWishlist = useCartStore((state) => state.removeFromWishlist);
   const addItem = useCartStore((state) => state.addItem);
 
-  const alertInfo = () => toast.info("info");
 
   return (
     <AnimatePresence>
