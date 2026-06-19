@@ -5,6 +5,8 @@ import { Heart } from "lucide-react";
 import { analytics }
 from "@/lib/analytics";
 
+import { notify } from "@/lib/notifications";
+
 import {
   useCartStore,
 } from "@/store/cart-store";
@@ -42,6 +44,7 @@ export function WishlistButton({
         analytics.wishlistAdded(
           product.id,
         );
+        notify.wishlistAdded(product.name);
       }}
 
       className="
