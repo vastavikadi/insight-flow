@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 import { MagneticButton } from "@/components/spatial/MagneticButton";
 import { BentoShowcase } from "@/components/products/BentoShowcase";
 import { Navbar } from "@/components/layout/Navbar";
-import { ToastContainer, toast } from "react-custom-alert";
-import "react-custom-alert/dist/index.css";
 
 export default function Home() {
   return (
@@ -31,7 +29,6 @@ export default function Home() {
           backgroundSize: "50px 50px",
         }}
       />
-      <ToastContainer floatingTime={5000} />
       <Navbar />
       <section
         className="
