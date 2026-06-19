@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+html,
+body {
+  background: black;
+  color: white;
+
+  overflow-x: hidden;
+
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+::selection {
+  background: #7c3aed;
+}
