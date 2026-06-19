@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
+import { notify } from "@/lib/notifications";
+
 import { useCartStore } from "@/store/cart-store";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { analytics } from "@/lib/analytics";
@@ -136,7 +138,7 @@ export function WishlistDrawer() {
                       removeFromWishlist(item.id);
 
                       analytics.addToCart(item.id);
-
+notify.movedToCart(item.name);
                       analytics.wishlistMovedToCart(item.id);
                     }}
                     className="
@@ -185,7 +187,8 @@ export function WishlistDrawer() {
                   <button
                     onClick={() => {
                       removeFromWishlist(item.id);
-                      analytics.wishlistRemoved(item.id);
+notify.wishlistRemoved(item.name);
+analytics.wishlistRemoved(item.id);
                     }}
                     className="p-2 rounded-lg hover:bg-red-500/20 transition"
                   >
