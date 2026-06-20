@@ -2,6 +2,9 @@
 
 A lightweight full-stack user analytics platform inspired by Google Analytics.
 
+Dashboard is available at [https://insightflow-pi.vercel.app/dashboard](https://insightflow-pi.vercel.app/dashboard).
+API documentation is available at [https://insight-flow-zdsk.onrender.com/api-docs/](https://insight-flow-zdsk.onrender.com/api-docs/).
+
 InsightFlow consists of:
 
 * Analytics Tracker SDK
@@ -10,6 +13,8 @@ InsightFlow consists of:
 * Demo E-Commerce Store
 
 The platform captures user behavior in real time, stores events, and visualizes them through a modern analytics dashboard.
+
+Check API documentation at [http://localhost:5000/api-docs](http://localhost:5000/api-docs) after running the backend server.
 
 ---
 
