@@ -87,4 +87,10 @@ router.get(
   ),
 );
 
+router.get(
+  "/export-sessions",
+  analyticsRateLimit,
+  asyncHandler(AnalyticsController.exportSessions)
+);
+
 export default router;

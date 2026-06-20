@@ -6,19 +6,29 @@ import { PageAnalyticsChart } from "@/components/dashboard/PageAnalyticsChart";
 
 import { FunnelChart } from "@/components/dashboard/FunnelChart";
 
-import {
-  TopEventsTable,
-} from "@/components/dashboard/TopEventsTable";
+import { TopEventsTable } from "@/components/dashboard/TopEventsTable";
 
-import {
-  ProductAnalyticsChart,
-}
-from "@/components/dashboard/ProductAnalyticsChart";
+import { ProductAnalyticsChart } from "@/components/dashboard/ProductAnalyticsChart";
 
-import { getEventDistribution, getPages, getFunnel, getProductsAnalytics, getTopEvents } from "@/lib/dashboard-api";
+import { PagesAnalyticsTable } from "@/components/dashboard/PagesAnalyticsTable";
+import { ProductAnalyticsTable } from "@/components/dashboard/ProductAnalyticsTable";
+import {
+  getEventDistribution,
+  getPages,
+  getFunnel,
+  getProductsAnalytics,
+  getTopEvents,
+} from "@/lib/dashboard-api";
+import { StatsCard } from "@/components/dashboard/StatsCard";
 
 export default async function AnalyticsPage() {
-  const [eventsResponse, pagesResponse, funnelResponse, productsResponse, topEventsResponse] = await Promise.all([
+  const [
+    eventsResponse,
+    pagesResponse,
+    funnelResponse,
+    productsResponse,
+    topEventsResponse,
+  ] = await Promise.all([
     getEventDistribution(),
     getPages(),
     getFunnel(),
@@ -26,102 +36,52 @@ export default async function AnalyticsPage() {
     getTopEvents(),
   ]);
 
-  const totalOpened =
-  productsResponse.reduce(
-    (sum, p) =>
-      sum + p.opened,
+  const pages = pagesResponse.data;
+
+  const totalViews = pages.reduce(
+    (sum: number, page: { pageViews: number }) => sum + page.pageViews,
     0,
   );
 
-const totalWishlisted =
-  productsResponse.reduce(
-    (sum, p) =>
-      sum + p.wishlisted,
+  const totalClicks = pages.reduce(
+    (sum: number, page: { clicks: number }) => sum + page.clicks,
     0,
   );
 
-const totalCarted =
-  productsResponse.reduce(
-    (sum, p) =>
-      sum + p.carted,
-    0,
-  );
+  const avgCtr =
+    totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(2) : "0";
 
   return (
     <DashboardLayout>
-      <h1
-        className="
-          text-4xl
-          font-bold
+      <h1 className="text-4xl font-bold mb-8">Analytics</h1>
 
-          mb-8
-        "
-      >
-        Analytics
-      </h1>
-
-      <div
-        className="
-          grid
-
-          lg:grid-cols-2
-
-          gap-6
-        "
-      >
+      <div className="grid lg:grid-cols-2 gap-6">
         <EventDistributionChart data={eventsResponse.data} />
 
         <PageAnalyticsChart data={pagesResponse.data} />
-        
+      </div>
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <StatsCard title="Total Page Views" value={totalViews} />
+
+        <StatsCard title="Total Clicks" value={totalClicks} />
+
+        <StatsCard title="Average CTR" value={`${avgCtr}%`} />
       </div>
       <div className="mt-8">
-          <FunnelChart data={funnelResponse.data} />
-        </div>
-      <div
-  className="
-    mt-8
-  "
->
-  <ProductAnalyticsChart
-    data={
-      productsResponse.data
-    }
-  />
-</div>
-      <div
-  className="
-    grid
-    md:grid-cols-3
-    gap-6
-    mb-8
-  "
->
-  <StatsCard
-    title="Product Opens"
-    value={totalOpened}
-  />
-
-  <StatsCard
-    title="Wishlists"
-    value={totalWishlisted}
-  />
-
-  <StatsCard
-    title="Cart Adds"
-    value={totalCarted}
-  />
-</div>
-      <div
-  className="
-    mt-8
-  "
->
-  <TopEventsTable
-    data={
-      topEventsResponse.data
-    }
-  />
-</div>
+        <PagesAnalyticsTable pages={pagesResponse.data} />
+      </div>
+      <div className="mt-8">
+        <FunnelChart data={funnelResponse.data} />
+      </div>
+      <div className="mt-8">
+        <ProductAnalyticsChart data={productsResponse.data} />
+      </div>
+      <div className="mt-8">
+        <ProductAnalyticsTable products={productsResponse.data} />
+      </div>
+      <div className="mt-8">
+        <TopEventsTable data={topEventsResponse.data} />
+      </div>
     </DashboardLayout>
   );
 }

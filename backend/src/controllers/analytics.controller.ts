@@ -3,35 +3,22 @@ import { Request, Response } from "express";
 import { AnalyticsService } from "../services/analytics.service.js";
 
 import { EventService } from "../services/event.service.js";
-import { getPagination, getDateFilters } from "../utils/pagination.js";
+import { getPagination } from "../utils/pagination.js";
+import { buildDateFilter } from "../utils/dateFilter.js";
 
 export class AnalyticsController {
-  private static getDateFilters(
-  req: Request,
-) {
-  return {
-    startDate:
-      req.query.startDate as string,
+  private static buildDateFilter(req: Request) {
+    return {
+      startDate: req.query.startDate as string,
 
-    endDate:
-      req.query.endDate as string,
-  };
+      endDate: req.query.endDate as string,
+    };
   }
-  
-  static getOverview = async (req: Request, res: Response) => {
-    const {
-  startDate,
-  endDate,
-} =
-  AnalyticsController.getDateFilters(
-    req,
-  );
 
-const data =
-  await AnalyticsService.getOverview(
-    startDate,
-    endDate,
-  );
+  static getOverview = async (req: Request, res: Response) => {
+    const { startDate, endDate } = AnalyticsController.buildDateFilter(req);
+
+    const data = await AnalyticsService.getOverview(startDate, endDate);
 
     res.json({
       success: true,
@@ -82,14 +69,8 @@ const data =
     });
   };
 
-  static getEventDistribution =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
-
-    const data =
-      await AnalyticsService.getEventDistribution();
+  static getEventDistribution = async (req: Request, res: Response) => {
+    const data = await AnalyticsService.getEventDistribution();
 
     res.json({
       success: true,
@@ -97,14 +78,8 @@ const data =
     });
   };
 
-  static getConversionFunnel =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
-
-    const data =
-      await AnalyticsService.getConversionFunnel();
+  static getConversionFunnel = async (req: Request, res: Response) => {
+    const data = await AnalyticsService.getConversionFunnel();
 
     res.json({
       success: true,
@@ -112,24 +87,10 @@ const data =
     });
   };
 
-  static getTimeline =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
+  static getTimeline = async (req: Request, res: Response) => {
+    const { startDate, endDate } = AnalyticsController.buildDateFilter(req);
 
-    const {
-  startDate,
-  endDate,
-} =
-  AnalyticsController.getDateFilters(
-    req,
-  );
-
-    const data =
-      await AnalyticsService.getTimeline(
-        startDate, endDate
-      );
+    const data = await AnalyticsService.getTimeline(startDate, endDate);
 
     res.json({
       success: true,
@@ -137,21 +98,10 @@ const data =
     });
   };
 
-  static getProductAnalytics =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
-    const {
-  startDate,
-  endDate,
-} =
-  AnalyticsController.getDateFilters(
-    req,
-  );
+  static getProductAnalytics = async (req: Request, res: Response) => {
+    const { startDate, endDate } = AnalyticsController.buildDateFilter(req);
 
-    const data =
-      await AnalyticsService.getProductAnalytics(startDate, endDate);
+    const data = await AnalyticsService.getProductAnalytics(startDate, endDate);
 
     res.json({
       success: true,
@@ -159,25 +109,33 @@ const data =
     });
   };
 
-  static getTopEvents =
-  async (
-    req: Request,
-    res: Response,
-  ) => {
-    const {
-  startDate,
-  endDate,
-} =
-  AnalyticsController.getDateFilters(
-    req,
-  );
+  static getTopEvents = async (req: Request, res: Response) => {
+    const { startDate, endDate } = AnalyticsController.buildDateFilter(req);
 
-    const data =
-      await AnalyticsService.getTopEvents(startDate, endDate,);
+    const data = await AnalyticsService.getTopEvents(startDate, endDate);
 
     res.json({
       success: true,
       data,
+    });
+  };
+
+  //export all sessions at once
+  static exportSessions = async (req: Request, res: Response) => {
+    const query = {
+      page: 1,
+      limit: 100000,
+      search: req.query.search as string,
+      sortBy: req.query.sortBy as any,
+      sortOrder: req.query.sortOrder as any,
+    };
+    const { sessions } = await AnalyticsService.getSessions(query);
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", 'attachment; filename="sessions.csv"');
+    res.json({
+      success: true,
+      data: sessions,
     });
   };
 }

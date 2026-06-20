@@ -61,7 +61,9 @@ export default async function HeatmapPage() {
                   font-semibold
                 "
               >
-                {page._id}
+                {page._id.length > 20
+                  ? `${page._id.slice(0, 20)}...`
+                  : page._id}
               </h3>
 
               <div

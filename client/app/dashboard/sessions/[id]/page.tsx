@@ -1,11 +1,8 @@
-import { DashboardLayout }
-from "@/components/dashboard/DashboardLayout";
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 
-import { EventTimeline }
-from "@/components/dashboard/EventTimeline";
+import { EventTimeline } from "@/components/dashboard/EventTimeline";
 
-import { getSessionJourney }
-from "@/lib/dashboard-api";
+import { getSessionJourney } from "@/lib/dashboard-api";
 
 export default async function SessionDetail({
   params,
@@ -14,12 +11,9 @@ export default async function SessionDetail({
     id: string;
   }>;
 }) {
+  const { id } = await params;
 
-  const { id } =
-    await params;
-
-  const response =
-    await getSessionJourney(id);
+  const response = await getSessionJourney(id);
 
   const events = response.data;
 
@@ -44,9 +38,7 @@ export default async function SessionDetail({
           {id}
         </p>
 
-        <EventTimeline
-          events={events}
-        />
+        <EventTimeline events={events} />
       </div>
     </DashboardLayout>
   );

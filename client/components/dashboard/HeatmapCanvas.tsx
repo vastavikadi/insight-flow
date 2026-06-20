@@ -1,7 +1,14 @@
 "use client";
 
+import {
+  useEffect,
+  useRef,
+} from "react";
+
+import h337 from "heatmap.js";
+
 interface HeatPoint {
-  clickData?: {
+  clickData: {
     x: number;
     y: number;
   };
@@ -12,14 +19,50 @@ export function HeatmapCanvas({
 }: {
   points: HeatPoint[];
 }) {
+
+  const containerRef =
+    useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+
+    if (
+      !containerRef.current
+    ) {
+      return;
+    }
+
+    const heatmap =
+      h337.create({
+        container:
+          containerRef.current,
+
+        radius: 40,
+
+        maxOpacity: 1,
+
+        blur: 0.9,
+      });
+
+    heatmap.setData({
+      min: 0,
+      max: 10,
+
+      data: points.map(point => ({
+        x: point.clickData.x,
+        y: point.clickData.y,
+        value: 1,
+      })),
+    });
+
+  }, [points]);
+
   return (
     <div
+      ref={containerRef}
       className="
         relative
 
-        w-full
-
-        h-[800px]
+        h-225
 
         rounded-3xl
 
@@ -30,42 +73,6 @@ export function HeatmapCanvas({
 
         overflow-hidden
       "
-    >
-      {points.map(
-        (point, index) => {
-
-          if (
-            !point.clickData
-          ) {
-            return null;
-          }
-
-          return (
-            <div
-              key={index}
-              className="
-                absolute
-
-                w-5
-                h-5
-
-                rounded-full
-
-                bg-red-500/40
-
-                blur-[2px]
-              "
-              style={{
-                left:
-                  point.clickData.x,
-
-                top:
-                  point.clickData.y,
-              }}
-            />
-          );
-        },
-      )}
-    </div>
+    />
   );
 }

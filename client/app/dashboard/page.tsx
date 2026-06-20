@@ -46,24 +46,12 @@ export default async function Dashboard() {
           title="Most Visited Page"
           value={overview.mostVisitedPage ?? "-"}
         />
-        <StatsCard
-  title="Purchases"
-  value={
-    overview.purchaseCount
-  }
-/>
+        <StatsCard title="Purchases" value={overview.purchaseCount} />
 
-<StatsCard
-  title="Cart Adds"
-  value={
-    overview.cartAdds
-  }
-/>
+        <StatsCard title="Cart Adds" value={overview.cartAdds} />
       </div>
       <div
-        className="
-    mt-8
-  "
+        className="mt-8"
       >
         <TimelineChart data={timeline} />
       </div>

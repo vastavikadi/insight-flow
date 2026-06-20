@@ -1,12 +1,10 @@
-import { DashboardLayout }
-from "@/components/dashboard/DashboardLayout";
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 
-import { HeatmapCanvas }
-from "@/components/dashboard/HeatmapCanvas";
+import { HeatmapCanvas } from "@/components/dashboard/HeatmapCanvas";
 
-import { getHeatmap }
-from "@/lib/dashboard-api";
+import { getHeatmap } from "@/lib/dashboard-api";
 
+import Link from "next/link";
 export default async function HeatmapDetail({
   params,
 }: {
@@ -14,20 +12,29 @@ export default async function HeatmapDetail({
     page: string;
   }>;
 }) {
-
-  const { page } =
-    await params;
-
-  const pageUrl =
-    decodeURIComponent(page);
-
-  const response =
-    await getHeatmap(
-      pageUrl,
+  if (!params) {
+    return (
+      <DashboardLayout>
+        <h1
+          className="
+            text-4xl
+            font-bold
+            mb-8
+          "
+        >
+          Heatmap
+        </h1>
+      </DashboardLayout>
     );
+  }
 
-  const clicks =
-    response.data;
+  const { page } = await params;
+
+  const pageUrl = decodeURIComponent(page);
+
+  const response = await getHeatmap(pageUrl);
+
+  const clicks = response.data;
 
   return (
     <DashboardLayout>
@@ -40,7 +47,18 @@ export default async function HeatmapDetail({
       >
         Heatmap
       </h1>
+      <Link
+        href="/dashboard/heatmap"
+        className="
+          mb-4
 
+          text-sm
+          text-violet-500
+          hover:underline
+        "
+      >
+        &larr; Back to Heatmaps
+      </Link>
       <p
         className="
           text-zinc-400
@@ -50,9 +68,7 @@ export default async function HeatmapDetail({
         {pageUrl}
       </p>
 
-      <HeatmapCanvas
-        points={clicks}
-      />
+      <HeatmapCanvas points={clicks} />
     </DashboardLayout>
   );
 }

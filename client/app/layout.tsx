@@ -3,9 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AnalyticsProvider } from "@/components/providers/AnalyticsProvider";
 import { SearchPalette } from "@/components/search/SearchPalette";
-import {
-  CartDrawer,
-} from "@/components/cart/CartDrawer";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 
 import { Toaster } from "sonner";
@@ -35,13 +33,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <AnalyticsProvider>
-        <body className="min-h-full flex flex-col">{children}</body>
-        <SearchPalette />
-        <CartDrawer />
-        <WishlistDrawer />
-<Toaster position="top-right" richColors closeButton />
-      </AnalyticsProvider>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <AnalyticsProvider>
+          <SearchPalette />
+          <CartDrawer />
+          <WishlistDrawer />
+        </AnalyticsProvider>
+        <Toaster position="top-right" richColors closeButton />
+      </body>
     </html>
   );
 }
