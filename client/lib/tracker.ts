@@ -7,9 +7,8 @@ let tracker: InsightFlow | null = null;
 export function getTracker() {
   if (!tracker) {
     tracker = new InsightFlow({
-      apiUrl:
-        "http://localhost:5000/api/events/bulk",
-      debug: true,
+      apiUrl: process.env.NEXT_PUBLIC_API_URL + "/events/bulk",
+      debug: false,
     });
   }
 

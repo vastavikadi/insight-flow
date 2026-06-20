@@ -1,7 +1,7 @@
 import app from "./app.js";
-import { env } from "./config/env.js";
-import { connectDB } from "./config/db.js";
-import { logger } from "./utils/logger.js";
+import { env } from "./config/env";
+import { connectDB } from "./config/db";
+import { logger } from "./utils/logger";
 import mongoose from "mongoose";
 import { Server } from "http";
 

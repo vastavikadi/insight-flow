@@ -33,11 +33,6 @@ export const analytics = {
   },
 
   purchaseCompleted(orderId: string, products: unknown[], total: number) {
-    console.log("PURCHASE EVENT", {
-      orderId,
-      products,
-      total,
-    });
     tracker().track("purchase_completed", {
       orderId,
       products,

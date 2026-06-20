@@ -1,9 +1,9 @@
-import EventModel from "../models/Event.js";
+import EventModel from "../models/Event";
 
-import { EventRepository } from "../repositories/event.repository.js";
-import { SessionQuery } from "../types/session-query.js";
+import { EventRepository } from "../repositories/event.repository";
+import { SessionQuery } from "../types/session-query";
 import { buildDateFilter }
-from "../utils/dateFilter.js";
+from "../utils/dateFilter";
 
 export class AnalyticsService {
   static async getSessions(query: SessionQuery) {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { EventService } from "../services/event.service.js";
-import { EventDTO } from "../dto/event.dto.js";
-import { getPagination } from "../utils/pagination.js";
+import { EventService } from "../services/event.service";
+import { EventDTO } from "../dto/event.dto";
+import { getPagination } from "../utils/pagination";
 
 export class SessionController {
   static getJourney = async (req: Request, res: Response) => {

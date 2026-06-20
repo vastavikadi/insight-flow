@@ -2,8 +2,12 @@ import type { AnalyticsEvent } from "./types";
 
 export class Transport {
   constructor(
-    private apiUrl: string,
-    private debug = false,
+    private readonly apiUrl: string,
+    private readonly logger: {
+      log: (...args: unknown[]) => void;
+      warn: (...args: unknown[]) => void;
+      error: (...args: unknown[]) => void;
+    },
   ) {}
 
   async send(events: AnalyticsEvent[]): Promise<boolean> {
@@ -13,12 +17,9 @@ export class Transport {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        if (this.debug) {
-          console.log(
-            `[InsightFlow] Sending batch (${events.length} events) | Attempt ${attempt}/${maxRetries}`,
-          );
-        }
-        console.log("PAYLOAD", JSON.stringify({ events }, null, 2));
+        this.logger.log(
+          `Sending batch (${events.length} events) | Attempt ${attempt}/${maxRetries}`,
+        );
         const response = await fetch(this.apiUrl, {
           method: "POST",
 
@@ -30,49 +31,39 @@ export class Transport {
             events,
           }),
         });
-        console.log(await response.text());
 
         if (response.ok) {
-          if (this.debug) {
-            console.log(`[InsightFlow] Batch sent successfully`);
-          }
+          this.logger.log(`[InsightFlow] Batch sent successfully`);
 
           return true;
         }
         if (response.status >= 400 && response.status < 500) {
-          if (this.debug) {
-            console.error(
-              `[InsightFlow] Client error (${response.status}), not retrying`,
-            );
-          }
+          this.logger.error(
+            `[InsightFlow] Client error (${response.status}), not retrying`,
+          );
 
           return false;
         }
-        if (this.debug) {
-          console.warn(
-            `[InsightFlow] Server responded with ${response.status}`,
-          );
-        }
+
+        this.logger.warn(
+          `[InsightFlow] Server responded with ${response.status}`,
+        );
       } catch (error) {
-        if (this.debug) {
-          console.error(`[InsightFlow] Request failed`, error);
-        }
+        this.logger.error(`[InsightFlow] Request failed`, error);
       }
       if (attempt < maxRetries) {
-        if (this.debug) {
-          console.log(`[InsightFlow] Retrying in ${delay}ms`);
-        }
+        this.logger.log(`[InsightFlow] Retrying in ${delay}ms`);
 
         await new Promise((resolve) => setTimeout(resolve, delay));
 
         delay *= 2;
       }
     }
-    if (this.debug) {
-      console.error(
-        `[InsightFlow] Max retries exceeded. Batch discarded from transport layer.`,
-      );
-    }
+
+    this.logger.error(
+      `[InsightFlow] Max retries exceeded. Batch discarded from transport layer.`,
+    );
+
     return false;
   }
 }

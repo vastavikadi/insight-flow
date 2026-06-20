@@ -1,27 +1,15 @@
-export class ApiError
-extends Error {
-
+export class ApiError extends Error {
   statusCode: number;
 
   details?: unknown;
 
-  constructor(
-    statusCode: number,
-    message: string,
-    details?: unknown
-  ) {
-
+  constructor(statusCode: number, message: string, details?: unknown) {
     super(message);
 
-    this.statusCode =
-      statusCode;
+    this.statusCode = statusCode;
 
-    this.details =
-      details;
+    this.details = details;
 
-    Error.captureStackTrace(
-      this,
-      this.constructor
-    );
+    Error.captureStackTrace(this, this.constructor);
   }
 }

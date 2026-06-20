@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from "mongoose";
-import z from "zod";
 
 export interface IEvent extends Document {
   eventId: string;

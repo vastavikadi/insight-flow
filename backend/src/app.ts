@@ -2,17 +2,17 @@ import express from "express";
 import cors from "cors";
 import compression from "compression";
 import helmet from "helmet";
-import eventRoutes from "./routes/event.routes.js";
-import sessionRoutes from "./routes/session.routes.js";
-import analyticsRoutes from "./routes/analytics.routes.js";
-import { errorMiddleware } from "./middleware/error.middleware.js";
-import { loggerMiddleware } from "./middleware/logger.middleware.js";
-import { requestIdMiddleware } from "./middleware/requestId.middleware.js";
-import { notFoundMiddleware } from "./middleware/notFound.middleware.js";
+import eventRoutes from "./routes/event.routes";
+import sessionRoutes from "./routes/session.routes";
+import analyticsRoutes from "./routes/analytics.routes";
+import { errorMiddleware } from "./middleware/error.middleware";
+import { loggerMiddleware } from "./middleware/logger.middleware";
+import { requestIdMiddleware } from "./middleware/requestId.middleware";
+import { notFoundMiddleware } from "./middleware/notFound.middleware";
 import mongoose from "mongoose";
 import swaggerUi from "swagger-ui-express";
 
-import { swaggerSpec } from "./docs/swagger.js";
+import { swaggerSpec } from "./docs/swagger";
 
 const app = express();
 

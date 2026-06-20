@@ -1,4 +1,4 @@
-import { EventRepository } from "../repositories/event.repository.js";
+import { EventRepository } from "../repositories/event.repository";
 
 export class EventService {
   static async ingestEvents(events: any[]) {

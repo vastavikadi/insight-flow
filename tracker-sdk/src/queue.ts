@@ -1,54 +1,36 @@
 import type { AnalyticsEvent } from "./types";
+import type { Logger } from "./logger";
+import { STORAGE_KEYS } from "./constants";
 
-import {
-  STORAGE_KEYS,
-} from "./constants";
-
-import {
-  Transport,
-} from "./transport";
+import { Transport } from "./transport";
 
 export class EventQueue {
-  private queue:
-    AnalyticsEvent[] = [];
+  private queue: AnalyticsEvent[] = [];
 
-  private isFlushing =
-    false;
+  private isFlushing = false;
 
   constructor(
-    private transport:
-      Transport,
+    private transport: Transport,
 
-    private batchSize:
-      number,
+    private batchSize: number,
 
-    private debug =
-      false,
+    private logger: Logger,
   ) {
     this.loadPersistedQueue();
   }
 
   private loadPersistedQueue() {
-    const raw =
-      localStorage.getItem(
-        STORAGE_KEYS.PENDING_QUEUE,
-      );
+    const raw = localStorage.getItem(STORAGE_KEYS.PENDING_QUEUE);
 
     if (!raw) {
       return;
     }
 
     try {
-      this.queue =
-        JSON.parse(raw);
+      this.queue = JSON.parse(raw);
 
-      if (
-        this.debug &&
-        this.queue.length > 0
-      ) {
-        console.log(
-          `[InsightFlow] Restored ${this.queue.length} pending events`,
-        );
+      if (this.queue.length > 0) {
+        this.logger.log(`[InsightFlow] Restored ${this.queue.length} pending events`);
       }
     } catch {
       this.queue = [];
@@ -58,98 +40,60 @@ export class EventQueue {
   private persistQueue() {
     localStorage.setItem(
       STORAGE_KEYS.PENDING_QUEUE,
-      JSON.stringify(
-        this.queue,
-      ),
+      JSON.stringify(this.queue),
     );
   }
 
-  enqueue(
-    event: AnalyticsEvent,
-  ) {
-    this.queue.push(
-      event,
-    );
+  enqueue(event: AnalyticsEvent) {
+    this.queue.push(event);
 
     this.persistQueue();
 
-    if (this.debug) {
-      console.log(
-        `[InsightFlow] Queued event: ${event.eventType}`,
-      );
-    }
+    this.logger.log(`[InsightFlow] Queued event: ${event.eventType}`);
 
-    if (
-      this.queue.length >=
-      this.batchSize
-    ) {
+    if (this.queue.length >= this.batchSize) {
       void this.flush();
     }
   }
 
   async flush() {
-    if (
-      this.isFlushing
-    ) {
+    if (this.isFlushing) {
       return;
     }
 
-    if (
-      this.queue.length === 0
-    ) {
+    if (this.queue.length === 0) {
       return;
     }
 
     this.isFlushing = true;
 
-    const batch =
-      this.queue.slice();
+    const batch = this.queue.slice();
 
-    if (this.debug) {
-      console.log(
-        `[InsightFlow] Flushing ${batch.length} events`,
-      );
-    }
+    this.logger.log(`[InsightFlow] Flushing ${batch.length} events`);
 
-    const success =
-      await this.transport.send(
-        batch,
-      );
+    const success = await this.transport.send(batch);
 
     if (success) {
-      this.queue =
-        this.queue.filter(
-          queued =>
-            !batch.some(
-              sent =>
-                sent.eventId ===
-                queued.eventId,
-            ),
-        );
+      this.queue = this.queue.filter(
+        (queued) => !batch.some((sent) => sent.eventId === queued.eventId),
+      );
 
       this.persistQueue();
 
-      if (this.debug) {
-        console.log(
-          `[InsightFlow] Flush completed successfully`,
-        );
-      }
+      this.logger.log(
+        `[InsightFlow] Flush completed successfully`,
+      );
     } else {
-      if (this.debug) {
-        console.warn(
-          `[InsightFlow] Flush failed. Events retained in queue`,
-        );
-      }
+      this.logger.warn(
+        `[InsightFlow] Flush failed. Events retained in queue`,
+      );
     }
 
-    this.isFlushing =
-      false;
+    this.isFlushing = false;
   }
 
   getPendingEvents() {
-    return [
-      ...this.queue,
-    ];
+    return [...this.queue];
   }
 
   getQueueSize() {
@@ -161,10 +105,6 @@ export class EventQueue {
 
     this.persistQueue();
 
-    if (this.debug) {
-      console.log(
-        `[InsightFlow] Queue cleared`,
-      );
-    }
+    this.logger.log(`[InsightFlow] Queue cleared`);
   }
 }

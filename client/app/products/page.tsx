@@ -1,8 +1,6 @@
-import { products }
-from "@/lib/products";
+import { products } from "@/lib/products";
 
-import { ProductCard }
-from "@/components/products/ProductCard";
+import { ProductCard } from "@/components/products/ProductCard";
 
 export default function ProductsPage() {
   return (
@@ -39,14 +37,9 @@ export default function ProductsPage() {
             gap-8
           "
         >
-          {products.map(
-            product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
-            ),
-          )}
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </div>
     </main>

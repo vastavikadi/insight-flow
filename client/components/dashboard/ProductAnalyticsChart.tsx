@@ -15,6 +15,8 @@ export function ProductAnalyticsChart({ data }: { data: any[] }) {
   const totalWishlisted = data.reduce((sum, p) => sum + p.wishlisted, 0);
   const totalCarted = data.reduce((sum, p) => sum + p.carted, 0);
 
+  const bestProduct = data[0];
+
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-4 md:p-6">
       <h2 className="mb-6 text-xl md:text-2xl font-semibold">
@@ -52,6 +54,7 @@ export function ProductAnalyticsChart({ data }: { data: any[] }) {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <StatsCard title="Top Product" value={bestProduct?.productId ?? "-"} />
         <StatsCard title="Product Opens" value={totalOpened} />
         <StatsCard title="Wishlists" value={totalWishlisted} />
         <StatsCard title="Cart Adds" value={totalCarted} />

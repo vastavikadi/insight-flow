@@ -1,5 +1,6 @@
 "use client";
 
+import { decodePath } from "@/helper/HandleDecode";
 import {
   ResponsiveContainer,
   BarChart,
@@ -14,17 +15,12 @@ interface Props {
 }
 
 export function PageAnalyticsChart({ data }: Props) {
-  function formatXAxis({data}:{
-    data: {
-      _id: string;
-      totalEvents: number;
-      pageViews: number;
-      clicks: number;
-    }
-  }) {
-    return data._id.split("/").slice(-1)[0];
-  }
-    
+  const formatXAxis = (value: string) => {
+    const decoded = decodePath(value);
+
+    return decoded.split("/").filter(Boolean).pop() || "/";
+  };
+
   return (
     <div
       className="
@@ -41,15 +37,21 @@ export function PageAnalyticsChart({ data }: Props) {
       "
     >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} style={{ backgroundColor: "white" }} margin={{ top: 10, right: 10, left: -20, bottom: 50 }}>
-          <XAxis dataKey="_id" angle={-45} textAnchor="end" height={80} />
+        <BarChart
+          data={data}
+          style={{ backgroundColor: "white" }}
+        >
+          <XAxis
+            dataKey="_id"
+            angle={-90}
+            textAnchor="end"
+            height={80}
+            tickFormatter={formatXAxis}
+          />
 
           <YAxis />
 
-          <Tooltip
-            formatter={(value) => [value, "Events"]}
-            labelFormatter={(label) => `Page: ${label}`}
-          />
+          <Tooltip/>
 
           <Bar dataKey="totalEvents" radius={[4, 4, 0, 0]} />
         </BarChart>

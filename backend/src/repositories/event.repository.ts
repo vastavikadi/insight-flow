@@ -1,5 +1,5 @@
-import EventModel from "../models/Event.js";
-import { SessionQuery } from "../types/session-query.js";
+import EventModel from "../models/Event";
+import { SessionQuery } from "../types/session-query";
 
 export class EventRepository {
   static async bulkUpsertEvents(events: any[]) {

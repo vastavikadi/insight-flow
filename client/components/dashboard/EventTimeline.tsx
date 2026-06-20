@@ -1,3 +1,4 @@
+import { getEventStyle } from "@/helper/EventStyle";
 import { format } from "date-fns";
 
 interface Event {

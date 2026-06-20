@@ -1,4 +1,4 @@
-function getEventStyle(
+export function getEventStyle(
   eventType: string,
 ) {
   switch (

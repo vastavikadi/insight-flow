@@ -5,7 +5,7 @@ import {
 } from "express";
 
 import { ApiError }
-from "../utils/ApiError.js";
+from "../utils/ApiError";
 
 export const notFoundMiddleware =
   (

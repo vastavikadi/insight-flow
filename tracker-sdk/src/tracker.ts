@@ -1,5 +1,5 @@
 import type { AnalyticsEvent, TrackerConfig } from "./types";
-
+import { Logger } from "./logger";
 import { DEFAULTS } from "./constants";
 import { SessionManager } from "./session";
 import { Transport } from "./transport";
@@ -19,7 +19,9 @@ export class InsightFlow {
   private routeObserver?: MutationObserver;
 
   private currentPath: string = "";
-  
+
+  private logger!: Logger;
+
   constructor(config: TrackerConfig) {
     this.config = {
       flushInterval: DEFAULTS.FLUSH_INTERVAL,
@@ -30,13 +32,10 @@ export class InsightFlow {
 
     this.sessionManager = new SessionManager();
 
-    const transport = new Transport(this.config.apiUrl, this.config.debug);
+    this.logger = new Logger(this.config.debug);
+    const transport = new Transport(this.config.apiUrl, this.logger);
 
-    this.queue = new EventQueue(
-      transport,
-      this.config.batchSize,
-      this.config.debug,
-    );
+    this.queue = new EventQueue(transport, this.config.batchSize, this.logger);
   }
 
   public init() {
@@ -64,9 +63,7 @@ export class InsightFlow {
       void this.flush();
     }, this.config.flushInterval);
 
-    if (this.config.debug) {
-      console.log("[InsightFlow] Initialized");
-    }
+    this.logger.log("[InsightFlow] Initialized");
   }
 
   private buildMetadata() {
@@ -128,9 +125,7 @@ export class InsightFlow {
 
     this.queue.enqueue(event);
 
-    if (this.config.debug) {
-      console.log("[InsightFlow] Tracked:", eventType, event);
-    }
+    this.logger.log("[InsightFlow] Tracked:", eventType, event);
   }
 
   public trackPageView() {
@@ -223,8 +218,6 @@ export class InsightFlow {
 
     this.initialized = false;
 
-    if (this.config.debug) {
-      console.log("[InsightFlow] Destroyed");
-    }
+    this.logger.log("[InsightFlow] Destroyed");
   }
 }

@@ -1,17 +1,24 @@
 import Link from "next/link";
 
-import { DashboardLayout }
-from "@/components/dashboard/DashboardLayout";
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 
-import { getPages }
-from "@/lib/dashboard-api";
+import { getPages } from "@/lib/dashboard-api";
+import { resolveRange } from "@/lib/date-range";
+import { DateRangeFilter } from "@/components/dashboard/DateFilter";
 
-export default async function HeatmapPage() {
-  const response =
-    await getPages();
+export default async function HeatmapPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    range?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const { startDate, endDate } = resolveRange(params.range);
 
-  const pages =
-    response.data;
+  const response = await getPages(startDate, endDate);
+
+  const pages = response.data;
 
   return (
     <DashboardLayout>
@@ -24,7 +31,7 @@ export default async function HeatmapPage() {
       >
         Heatmaps
       </h1>
-
+      <DateRangeFilter />
       <div
         className="
           grid
@@ -33,14 +40,11 @@ export default async function HeatmapPage() {
           gap-6
         "
       >
-        {pages.map(
-          (page: any) => (
-            <Link
-              key={page._id}
-              href={`/dashboard/heatmap/${encodeURIComponent(
-                page._id,
-              )}`}
-              className="
+        {pages.map((page: any) => (
+          <Link
+            key={page._id}
+            href={`/dashboard/heatmap/${encodeURIComponent(page._id)}`}
+            className="
                 p-6
 
                 rounded-3xl
@@ -54,46 +58,31 @@ export default async function HeatmapPage() {
 
                 transition
               "
-            >
-              <h3
-                className="
+          >
+            <h3
+              className="
                   text-lg
                   font-semibold
                 "
-              >
-                {page._id.length > 20
-                  ? `${page._id.slice(0, 20)}...`
-                  : page._id}
-              </h3>
+            >
+              {page._id.length > 20 ? `${page._id.slice(0, 20)}...` : page._id}
+            </h3>
 
-              <div
-                className="
+            <div
+              className="
                   mt-4
                   space-y-2
                   text-zinc-400
                 "
-              >
-                <p>
-                  Events:
-                  {" "}
-                  {page.totalEvents}
-                </p>
+            >
+              <p>Events: {page.totalEvents}</p>
 
-                <p>
-                  Page Views:
-                  {" "}
-                  {page.pageViews}
-                </p>
+              <p>Page Views: {page.pageViews}</p>
 
-                <p>
-                  Clicks:
-                  {" "}
-                  {page.clicks}
-                </p>
-              </div>
-            </Link>
-          ),
-        )}
+              <p>Clicks: {page.clicks}</p>
+            </div>
+          </Link>
+        ))}
       </div>
     </DashboardLayout>
   );

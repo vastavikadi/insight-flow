@@ -20,8 +20,18 @@ import {
   getTopEvents,
 } from "@/lib/dashboard-api";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { resolveRange } from "@/lib/date-range";
+import { DateRangeFilter } from "@/components/dashboard/DateFilter";
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    range?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const { startDate, endDate } = resolveRange(params.range);
   const [
     eventsResponse,
     pagesResponse,
@@ -29,11 +39,11 @@ export default async function AnalyticsPage() {
     productsResponse,
     topEventsResponse,
   ] = await Promise.all([
-    getEventDistribution(),
-    getPages(),
-    getFunnel(),
-    getProductsAnalytics(),
-    getTopEvents(),
+    getEventDistribution(startDate, endDate),
+    getPages(startDate, endDate),
+    getFunnel(startDate, endDate),
+    getProductsAnalytics(startDate, endDate),
+    getTopEvents(startDate, endDate),
   ]);
 
   const pages = pagesResponse.data;
@@ -54,6 +64,7 @@ export default async function AnalyticsPage() {
   return (
     <DashboardLayout>
       <h1 className="text-4xl font-bold mb-8">Analytics</h1>
+      <DateRangeFilter />
 
       <div className="grid lg:grid-cols-2 gap-6">
         <EventDistributionChart data={eventsResponse.data} />

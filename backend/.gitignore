@@ -43,3 +43,6 @@ dist/
 build/
 next/
 output/
+
+coverage/
+package-lock.json

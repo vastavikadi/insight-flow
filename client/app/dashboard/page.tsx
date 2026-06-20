@@ -2,11 +2,22 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { getOverview, getTimeline } from "@/lib/dashboard-api";
 import { TimelineChart } from "@/components/dashboard/TimelineChart";
+import { resolveRange } from "@/lib/date-range";
+import { DateRangeFilter } from "@/components/dashboard/DateFilter";
 
-export default async function Dashboard() {
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    range?: string;
+  }>;
+}) {
+  const params = await searchParams;
+  const { startDate, endDate } = resolveRange(params.range);
+
   const [overviewResponse, timelineResponse] = await Promise.all([
-    getOverview(),
-    getTimeline(),
+    getOverview(startDate, endDate),
+    getTimeline(startDate, endDate),
   ]);
 
   const overview = overviewResponse.data;
@@ -24,6 +35,8 @@ export default async function Dashboard() {
       >
         Analytics Overview
       </h1>
+
+      <DateRangeFilter />
 
       <div
         className="
@@ -50,9 +63,7 @@ export default async function Dashboard() {
 
         <StatsCard title="Cart Adds" value={overview.cartAdds} />
       </div>
-      <div
-        className="mt-8"
-      >
+      <div className="mt-8">
         <TimelineChart data={timeline} />
       </div>
     </DashboardLayout>

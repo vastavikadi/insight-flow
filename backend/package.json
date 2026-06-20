@@ -5,9 +5,13 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
-    "lint": "eslint ."
+    "typecheck": "tsc --noEmit",
+    "typecheck:notests": "tsc --noEmit -p tsconfig.build.json",
+    "lint": "eslint .",
+    "test": "jest --coverage --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "compression": "^1.7.5",
@@ -30,11 +34,17 @@
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.3",
     "@types/pino-http": "^5.8.4",
+    "@types/supertest": "^7.2.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
