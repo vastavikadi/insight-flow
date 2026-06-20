@@ -99,34 +99,6 @@ The platform captures user behavior in real time, stores events, and visualizes 
 
 ---
 
-## Architecture
-
-┌─────────────────┐
-│ Demo Store      │
-└───────┬─────────┘
-        │
-        ▼
-┌─────────────────┐
-│ Tracker SDK     │
-└───────┬─────────┘
-        │
-        ▼
-┌─────────────────┐
-│ Ingestion API   │
-└───────┬─────────┘
-        │
-        ▼
-┌─────────────────┐
-│ MongoDB         │
-└───────┬─────────┘
-        │
-        ▼
-┌─────────────────┐
-│ Dashboard       │
-└─────────────────┘
-
----
-
 ## Project Structure
 
 ```text
