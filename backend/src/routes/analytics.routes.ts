@@ -39,4 +39,52 @@ router.get(
   asyncHandler(AnalyticsController.getPageAnalytics)
 );
 
+router.get(
+  "/events",
+  analyticsRateLimit,
+  asyncHandler(
+    AnalyticsController.getEventDistribution,
+  ),
+);
+
+router.get(
+  "/funnel",
+
+  analyticsRateLimit,
+
+  asyncHandler(
+    AnalyticsController.getConversionFunnel,
+  ),
+);
+
+router.get(
+  "/timeline",
+
+  analyticsRateLimit,
+
+  asyncHandler(
+    AnalyticsController.getTimeline,
+  ),
+);
+
+router.get(
+  "/products",
+
+  analyticsRateLimit,
+
+  asyncHandler(
+    AnalyticsController.getProductAnalytics,
+  ),
+);
+
+router.get(
+  "/top-events",
+
+  analyticsRateLimit,
+
+  asyncHandler(
+    AnalyticsController.getTopEvents,
+  ),
+);
+
 export default router;

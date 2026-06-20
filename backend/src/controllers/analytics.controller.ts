@@ -3,11 +3,35 @@ import { Request, Response } from "express";
 import { AnalyticsService } from "../services/analytics.service.js";
 
 import { EventService } from "../services/event.service.js";
-import { getPagination } from "../utils/pagination.js";
+import { getPagination, getDateFilters } from "../utils/pagination.js";
 
 export class AnalyticsController {
+  private static getDateFilters(
+  req: Request,
+) {
+  return {
+    startDate:
+      req.query.startDate as string,
+
+    endDate:
+      req.query.endDate as string,
+  };
+  }
+  
   static getOverview = async (req: Request, res: Response) => {
-    const data = await AnalyticsService.getOverview();
+    const {
+  startDate,
+  endDate,
+} =
+  AnalyticsController.getDateFilters(
+    req,
+  );
+
+const data =
+  await AnalyticsService.getOverview(
+    startDate,
+    endDate,
+  );
 
     res.json({
       success: true,
@@ -39,7 +63,7 @@ export class AnalyticsController {
   };
 
   static getHeatmap = async (req: Request, res: Response) => {
-    const pageUrl = req.query.page as string;
+    const pageUrl = req.query.pageUrl as string;
 
     const data = await EventService.getHeatmap(pageUrl);
 
@@ -51,6 +75,105 @@ export class AnalyticsController {
 
   static getPageAnalytics = async (req: Request, res: Response) => {
     const data = await AnalyticsService.getPageAnalytics();
+
+    res.json({
+      success: true,
+      data,
+    });
+  };
+
+  static getEventDistribution =
+  async (
+    req: Request,
+    res: Response,
+  ) => {
+
+    const data =
+      await AnalyticsService.getEventDistribution();
+
+    res.json({
+      success: true,
+      data,
+    });
+  };
+
+  static getConversionFunnel =
+  async (
+    req: Request,
+    res: Response,
+  ) => {
+
+    const data =
+      await AnalyticsService.getConversionFunnel();
+
+    res.json({
+      success: true,
+      data,
+    });
+  };
+
+  static getTimeline =
+  async (
+    req: Request,
+    res: Response,
+  ) => {
+
+    const {
+  startDate,
+  endDate,
+} =
+  AnalyticsController.getDateFilters(
+    req,
+  );
+
+    const data =
+      await AnalyticsService.getTimeline(
+        startDate, endDate
+      );
+
+    res.json({
+      success: true,
+      data,
+    });
+  };
+
+  static getProductAnalytics =
+  async (
+    req: Request,
+    res: Response,
+  ) => {
+    const {
+  startDate,
+  endDate,
+} =
+  AnalyticsController.getDateFilters(
+    req,
+  );
+
+    const data =
+      await AnalyticsService.getProductAnalytics(startDate, endDate);
+
+    res.json({
+      success: true,
+      data,
+    });
+  };
+
+  static getTopEvents =
+  async (
+    req: Request,
+    res: Response,
+  ) => {
+    const {
+  startDate,
+  endDate,
+} =
+  AnalyticsController.getDateFilters(
+    req,
+  );
+
+    const data =
+      await AnalyticsService.getTopEvents(startDate, endDate,);
 
     res.json({
       success: true,
